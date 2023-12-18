@@ -3,7 +3,8 @@ import AppError from "../utils/appError.js"
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-
+import TextEncryption from "../helper/textEncryption.js"
+import FileEncryption from "../helper/fileEncryption.js"
 const userRegister = tryCatch(async (req, res) => {
     const register = await User.create({
         firstName: req.body.firstName,
@@ -99,10 +100,38 @@ const createToken = async (id) => {
         }
     );
 };
+const data = tryCatch(async (req,res)=>{
+    console.log(req.body);
+    const a = TextEncryption.encryptText(req.body.text,req.body.pass)
+    console.log(a);
+})
+const data2 = tryCatch(async (req,res)=>{
+    console.log(req.body);
+    const path = await generateRandomString(6)
+    console.log(path);
+    const outputPath = `./a/${path}.enc`
+    console.log(outputPath);
+    //const a = await FileEncryption.fileEncrypt(req.body.url,outputPath,req.body.pass)
+    const b = await FileEncryption.fileDecrypt("./a/17028925461055sM3a8.enc","./a.mp4",req.body.pass)
+})
 
+async function generateRandomString(length) {
+    let result =Date.now();
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        const randomChar = characters.charAt(randomIndex);
+        result += randomChar;
+    }
+
+    return result;
+}
 const user = {
     userRegister,
-    userLogin
+    userLogin,
+    data,
+    data2
 }
 
 export default user

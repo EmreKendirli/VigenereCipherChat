@@ -7,36 +7,25 @@
  * ========================================================================== */
 // Dosya adı: decrypt.js
 
-function between(x, min, max) {
-    return x >= min && x <= max;
-}
+
 
 String.prototype.decrypt = function(key) {
-    let msg = [];
-    let output = '';
-	for (let char of this) {
-		let code = char.charCodeAt(0)
-		if (between(code, 65, 90)) {msg.push([code - 65, 0])}
-		else if (between(code, 97, 122)) {msg.push([code - 97, 1])}
-		else {msg.push(char)}
-	}
-
-
-    key = key.toLowerCase().split('').map(function(c) {
-        return c.charCodeAt(0) - 65;
-    });
-
-    for (var i = 0; i < msg.length; i++) {
-        if (typeof msg[i] === 'string') {
-            output += msg[i];
+    let result = '';
+    for (let i = 0, j = 0; i < this.length; i++) {
+        let char = this[i];
+        if (/[a-zA-Z]/.test(char)) {
+            let base = char.charCodeAt(0) < 97 ? 'A'.charCodeAt(0) : 'a'.charCodeAt(0);
+            let keyChar = key[j % key.length];
+            let keyOffset = keyChar.charCodeAt(0) < 97 ? 'A'.charCodeAt(0) : 'a'.charCodeAt(0);
+            let decryptedChar = String.fromCharCode((char.charCodeAt(0) - base - (keyChar.charCodeAt(0) - keyOffset) + 26) % 26 + base);
+            result += decryptedChar;
+            j++;
         } else {
-            let value = (key[i % key.length] - msg[i][0] + 26) % 26;
-            output += String.fromCharCode(26 - value + 65 + msg[i][1] * 32);
+            result += char;
         }
     }
-
-    return output;
-}
+    return result;
+};
 
 String.prototype.decryptMessage = function(key) {
     // Burada decrypt fonksiyonunu çağırabilirsiniz

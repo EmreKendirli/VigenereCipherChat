@@ -7,7 +7,7 @@ const app = express()
 dotenv.config();
 
 conn();
-
+app.use(express.static("a"))
 app.use("/api/v1/user",UserRoute)
 app.use("/api/v1/chat",ChatRoute)
 

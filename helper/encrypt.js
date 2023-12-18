@@ -1,32 +1,22 @@
-function between(x, min, max) {
-    return x >= min && x <= max;
-}
+
 
 String.prototype.encrypt = function(key) {
-    let msg = [];
-    let output = '';
-	for (let char of this) {
-		let code = char.charCodeAt(0)
-		if (between(code, 65, 90)) {msg.push([code - 65, 0])}
-		else if (between(code, 97, 122)) {msg.push([code - 97, 1])}
-		else {msg.push(char)}
-	}
-
-    key = key.toLowerCase().split('').map(function(c) {
-        return c.charCodeAt(0) - 65;
-    });
-
-    for (var i = 0; i < msg.length; i++) {
-        if (typeof msg[i] === 'string') {
-            output += msg[i];
+    let result = '';
+    for (let i = 0, j = 0; i < this.length; i++) {
+        let char = this[i];
+        if (/[a-zA-Z]/.test(char)) {
+            let base = char.charCodeAt(0) < 97 ? 'A'.charCodeAt(0) : 'a'.charCodeAt(0);
+            let keyChar = key[j % key.length];
+            let keyOffset = keyChar.charCodeAt(0) < 97 ? 'A'.charCodeAt(0) : 'a'.charCodeAt(0);
+            let encryptedChar = String.fromCharCode((char.charCodeAt(0) - base + keyChar.charCodeAt(0) - keyOffset) % 26 + base);
+            result += encryptedChar;
+            j++;
         } else {
-            let value = (msg[i][0] + key[i % key.length]) % 26;
-            output += String.fromCharCode(value + 65 + msg[i][1] * 32);
+            result += char;
         }
     }
-
-    return output;
-}
+    return result;
+};
 
 String.prototype.encryptMessage = function(key) {
     // Burada decrypt fonksiyonunu çağırabilirsiniz
