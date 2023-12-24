@@ -27,7 +27,7 @@ const userLogin = tryCatch(async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({
         email,
-    });
+    }); 
 
     let same = false;
     if (user) {
